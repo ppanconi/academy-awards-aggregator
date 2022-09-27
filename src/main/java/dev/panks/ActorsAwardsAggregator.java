@@ -90,14 +90,14 @@ public class ActorsAwardsAggregator {
 
   public Stream<Actor> aggregateAwardData(Collection<AnnualAwardDataInfo> data,
                                             Predicate<Actor> filter,
-                                            Comparator<Actor> comparator) {
+                                            Comparator<Actor> sortingComparator) {
 
-    return aggregateAwardData(data.stream(), filter, comparator);
+    return aggregateAwardData(data.stream(), filter, sortingComparator);
   }
 
   private Stream<Actor> aggregateAwardData(Stream<AnnualAwardDataInfo> stream,
                                              Predicate<Actor> filter,
-                                             Comparator<Actor> comparator) {
+                                             Comparator<Actor> sortingComparator) {
 
     return stream.map(annualAwardDataInfo -> annualAwardDataInfo.withYearOfBirth(annualAwardDataInfo.year - annualAwardDataInfo.age))
              .collect(Collectors.groupingBy(annualAwardDataInfo -> new Actor(annualAwardDataInfo.name, annualAwardDataInfo.actorYearOfBirth),
@@ -105,12 +105,12 @@ public class ActorsAwardsAggregator {
              .entrySet().stream()
              .map(entry -> entry.getKey().withNumberOfAwards(entry.getValue()))
              .filter(filter)
-             .sorted(comparator);
+             .sorted(sortingComparator);
   }
 
   public Stream<Actor> aggregateAwardDataFromCSVFiles(
     Predicate<Actor> filter,
-    Comparator<Actor> comparator, Path...paths) {
+    Comparator<Actor> sortingComparator, Path...paths) {
 
     return aggregateAwardData(Stream.of(paths).flatMap((Path path) -> {
         try {
@@ -119,6 +119,6 @@ public class ActorsAwardsAggregator {
           throw new RuntimeException(e);
         }
       }).filter(l -> !l.startsWith("#")).map(l -> l.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).map(AnnualAwardDataInfo::fromArray),
-      filter, comparator);
+      filter, sortingComparator);
   }
 }
