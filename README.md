@@ -1,7 +1,7 @@
 # academy-awards-aggregator
 academy-awards-aggregator
 
-To build application:
+To build and test application:
 
 ```bash
 $ mvn install
