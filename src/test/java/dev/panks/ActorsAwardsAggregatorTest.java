@@ -3,8 +3,9 @@ package dev.panks;
 import static dev.panks.App.ACTOR_SORTING_COMPARATOR;
 import static dev.panks.App.ACTOR_FILTER_PREDICATE;
 
-import dev.panks.ActorsAwardsAggregator.Actor;
-import dev.panks.ActorsAwardsAggregator.AnnualAwardDataInfo;
+import dev.panks.aggregator.ActorsAwardsAggregator;
+import dev.panks.aggregator.ActorsAwardsAggregator.Actor;
+import dev.panks.aggregator.ActorsAwardsAggregator.AnnualAwardDataInfo;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;

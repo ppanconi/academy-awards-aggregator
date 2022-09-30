@@ -1,4 +1,4 @@
-package dev.panks;
+package dev.panks.aggregator;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,7 +50,7 @@ public class ActorsAwardsAggregator {
     }
   }
 
-  static class Actor {
+  public static class Actor {
     public String name;
     public int yearOfBirth;
     public long numberOfAwards;
@@ -99,8 +99,8 @@ public class ActorsAwardsAggregator {
                                              Predicate<Actor> filter,
                                              Comparator<Actor> sortingComparator) {
 
-    return stream.map(annualAwardDataInfo -> annualAwardDataInfo.withYearOfBirth(annualAwardDataInfo.year - annualAwardDataInfo.age))
-             .collect(Collectors.groupingBy(annualAwardDataInfo -> new Actor(annualAwardDataInfo.name, annualAwardDataInfo.actorYearOfBirth),
+    return stream.parallel().map(annualAwardDataInfo -> annualAwardDataInfo.withYearOfBirth(annualAwardDataInfo.year - annualAwardDataInfo.age))
+              .collect(Collectors.groupingBy(annualAwardDataInfo -> new Actor(annualAwardDataInfo.name, annualAwardDataInfo.actorYearOfBirth),
                Collectors.counting()))
              .entrySet().stream()
              .map(entry -> entry.getKey().withNumberOfAwards(entry.getValue()))
@@ -118,7 +118,7 @@ public class ActorsAwardsAggregator {
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
-      }).filter(l -> !l.startsWith("#")).map(l -> l.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).map(AnnualAwardDataInfo::fromArray),
+      }).parallel().filter(l -> !l.startsWith("#")).map(l -> l.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")).map(AnnualAwardDataInfo::fromArray),
       filter, sortingComparator);
   }
 }

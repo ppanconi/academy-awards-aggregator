@@ -1,6 +1,7 @@
 package dev.panks;
 
-import dev.panks.ActorsAwardsAggregator.Actor;
+import dev.panks.aggregator.ActorsAwardsAggregator;
+import dev.panks.aggregator.ActorsAwardsAggregator.Actor;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.function.Predicate;
@@ -19,6 +20,7 @@ public class App {
 
   public static void main( String[] args ) throws Exception {
 
+    long startMS = System.currentTimeMillis();
     new ActorsAwardsAggregator()
             .aggregateAwardDataFromCSVFiles(ACTOR_FILTER_PREDICATE, ACTOR_SORTING_COMPARATOR,
                           Path.of(ClassLoader.getSystemResource("oscar_age_female.csv").toURI()),
@@ -26,6 +28,9 @@ public class App {
                         )
           .forEach(actor -> System.out.printf("Actor %s born in %s with number of awards %s\n",
             actor.name, actor.yearOfBirth, actor.numberOfAwards));
-    }
+    long endMS = System.currentTimeMillis();
 
+    System.out.println("ms: " + (endMS - startMS));
+
+  }
 }
